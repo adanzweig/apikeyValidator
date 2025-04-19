@@ -16,9 +16,16 @@ app.post('/validate', async (req, res) => {
   const { key } = req.body;
 
   try {
-    const result = await pool.query('SELECT COUNT(*) FROM licenses WHERE license = $1', [key]);
-    const count = parseInt(result.rows[0].count, 10);
-    res.json({ valid: count > 0 });
+    const result = await pool.query(
+      'SELECT * FROM licenses WHERE license = $1 AND start_date <= NOW() AND end_date >= NOW()',
+      [key]
+    );
+
+    if (result.rows.length > 0) {
+      res.json({ valid: true, data: result.rows[0] });
+    } else {
+      res.json({ valid: false, data: null });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
