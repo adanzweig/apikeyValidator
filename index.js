@@ -1,4 +1,5 @@
 // validate_license_api.js
+require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
 
@@ -8,7 +9,7 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 
 const pool = new Pool({
-  connectionString: 'postgresql://retool:npg_Ecxku8Nobes0@ep-flat-sun-a68yv9ht.us-west-2.retooldb.com/retool?sslmode=require',
+    connectionString: process.env.DATABASE_URL,
 });
 
 app.post('/validate', async (req, res) => {
